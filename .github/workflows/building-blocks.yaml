@@ -1,21 +1,64 @@
-name: Building Blocks
+name: System Report
 
-on: push
+on: push 
 
 jobs:
-  echo-hello:
+  job1:
     runs-on: ubuntu-latest
     steps:
-      - name: Say hello
-        run: echo "Hello, world!"
-
-  echo-goodbye:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Failed steps
+      - name: Print OS name and kernel version
         run: |
-          echo "This step will fail"
-          exit 1
+          echo "OS Name: $(grep '^PRETTY_NAME=' /etc/os-release | cut -d '"' -f2)"
+          echo "Kernel Version: $(uname -r)"
 
-      - name: Say goodbye
-        run: echo "Goodbye, World!"
+      - name: How much space is free
+        run: |
+          echo "Free Space:"
+          df -h | awk 'NR==1 || $6=="/" {print $0}'
+
+      - name: Current date and time
+        run: |
+          echo "Current Date and Time: $(date)"
+
+      - name: Install tree using apt-get
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tree
+        
+      - name: Use tree to display the folder structure of the runner's home directory, limited to two levels deep
+        run: |
+          echo "Folder Structure of Home Directory (limited to 2 levels):"
+          tree -L 2 ~
+
+  job2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install jq using apt-get
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Create a file called report.json containing at least three key-value pairs of your choice
+        run: |
+          echo '{
+            "name": "System Report",
+            "version": "1.0",
+            "status": "success"
+          }' > report.json
+      
+      - name: Use jq to read one value out of that file and print it
+        run: |
+          echo "Reading value from report.json:"
+          jq '.name' report.json
+
+      - name: Print the installed versions of python3, git and jq, each on its own line
+        run: |
+          echo "Installed Versions:"
+          echo "Python3: $(python3 --version)"
+          echo "Git: $(git --version)"
+          echo "jq: $(jq --version)"
+
+      - name: Finish by printing "Report complete"
+        run: |
+          echo "Report complete"
+    
