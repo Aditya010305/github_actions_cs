@@ -1,29 +1,22 @@
-name: Python Inspector
+name: Using Actions
 
-on:
-  push:
-  workflow_dispatch:
+on: workflow_dispatch
 
 jobs:
-  inspect:
+  build:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: react-app
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
         with:
-          python-version: '3.11'
-
-      - name: Print Python and pip versions
-        run: |
-          python --version
-          pip --version
-
-      - name: Print Python binary location
-        run: which python
-
-      - name: Print completion message
-        run: echo "Inspection complete"
+          node-version: '24.x'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm run test
+      
