@@ -1,7 +1,6 @@
 name: Python Inspector
 
 on:
-  push:
   workflow_dispatch:
 
 jobs:
