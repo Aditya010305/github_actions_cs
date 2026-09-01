@@ -25,10 +25,6 @@ on:
         description: 'Reason for the incident'
         required: false
         type: string
-      
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
